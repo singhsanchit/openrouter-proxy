@@ -19,9 +19,8 @@ const { URL } = require("url");
 const CONFIG = {
   listen: { host: "127.0.0.1", port: 8899 },
   target: { protocol: "https:", hostname: "openrouter.ai", port: null },
-  ssl: { rejectUnauthorized: true },
+  ssl:    { rejectUnauthorized: true },
   verbose: true,
-  sseFixUserAgents: ["claude-vscode"],
 };
 
 // Headers injected into every proxied request to unlock free MiMo access.
@@ -265,7 +264,7 @@ function proxyRequest(clientReq, clientRes) {
   headers["x-forwarded-host"] = clientReq.headers.host || "";
   headers["x-forwarded-proto"] = "http";
 
-  const isClaudeVSCode = CONFIG.sseFixUserAgents.some(ua => (clientReq.headers["user-agent"] || "").includes(ua));
+  const isClaudeVSCode = (CONFIG.sseFixUserAgents || []).some(ua => (clientReq.headers["user-agent"] || "").includes(ua));
   const wantSSE = isStreamingRequest(clientReq.headers);
   const proto = targetUrl.protocol === "https:" ? https : http;
 
